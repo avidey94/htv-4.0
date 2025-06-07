@@ -1,0 +1,170 @@
+{% schema %}
+{
+  "name": "Announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Latest Drop"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Check out our latest collection featuring exclusive designs and limited edition pieces.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "left",
+          "label": "Image Left"
+        },
+        {
+          "value": "right",
+          "label": "Image Right"
+        }
+      ],
+      "default": "right"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="announcement">
+  <div class="container">
+    <div class="announcement__grid{% if section.settings.layout == 'right' %} announcement__grid--reverse{% endif %}">
+      <div class="announcement__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="announcement__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="announcement__text rte">
+            {{ section.settings.text }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a href="{{ section.settings.button_link }}" class="btn announcement__button">
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.image != blank -%}
+        <div class="announcement__media">
+          <img src="{{ section.settings.image | image_url: width: 800 }}"
+               alt="{{ section.settings.heading }}"
+               class="announcement__image"
+               loading="lazy"
+               width="800"
+               height="600">
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+.announcement {
+  padding: 6rem 0;
+  background: #f5f5f5;
+}
+
+.announcement__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.announcement__grid--reverse {
+  direction: rtl;
+}
+
+.announcement__grid--reverse .announcement__content {
+  direction: ltr;
+}
+
+.announcement__heading {
+  font-size: 3.6rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.announcement__text {
+  font-size: 1.8rem;
+  margin-bottom: 3rem;
+  color: rgba(0,0,0,0.7);
+}
+
+.announcement__button {
+  display: inline-block;
+}
+
+.announcement__media {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.announcement__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.announcement__media:hover .announcement__image {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .announcement {
+    padding: 4rem 0;
+  }
+
+  .announcement__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .announcement__grid--reverse {
+    direction: ltr;
+  }
+
+  .announcement__heading {
+    font-size: 2.8rem;
+  }
+
+  .announcement__text {
+    font-size: 1.6rem;
+  }
+}
+</style> 

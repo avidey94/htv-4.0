@@ -1,0 +1,139 @@
+{%- assign product_image = product.featured_image | default: product.images[0] -%}
+{%- assign product_3d_model = product.metafields.custom.model_3d -%}
+
+<div class="product-card" data-product-id="{{ product.id }}">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__media">
+      {%- if product_3d_model != blank and settings.enable_3d_models -%}
+        <model-viewer
+          src="{{ product_3d_model }}"
+          alt="{{ product.title }}"
+          auto-rotate
+          camera-controls
+          disable-zoom
+          interaction-prompt="none"
+          loading="lazy"
+          class="product-card__model">
+        </model-viewer>
+      {%- else -%}
+        <img src="{{ product_image | image_url: width: 600 }}"
+             alt="{{ product.title }}"
+             class="product-card__image"
+             loading="lazy"
+             width="600"
+             height="600">
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__info">
+      <h3 class="product-card__title">{{ product.title }}</h3>
+      
+      <div class="product-card__price">
+        {%- if product.compare_at_price > product.price -%}
+          <span class="price price--sale">
+            {{ product.price | money }}
+          </span>
+          <span class="price price--compare">
+            {{ product.compare_at_price | money }}
+          </span>
+        {%- else -%}
+          <span class="price">
+            {{ product.price | money }}
+          </span>
+        {%- endif -%}
+      </div>
+
+      {%- if product.available -%}
+        <button class="btn add-to-cart" data-product-id="{{ product.id }}">
+          Add to Cart
+        </button>
+      {%- else -%}
+        <button class="btn btn--disabled" disabled>
+          Sold Out
+        </button>
+      {%- endif -%}
+    </div>
+  </a>
+</div>
+
+<style>
+.product-card {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card__link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card__media {
+  position: relative;
+  aspect-ratio: 1;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card__image {
+  transform: scale(1.05);
+}
+
+.product-card__model {
+  width: 100%;
+  height: 100%;
+  --poster-color: transparent;
+}
+
+.product-card__info {
+  padding: 1.5rem;
+}
+
+.product-card__title {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.product-card__price {
+  margin-bottom: 1.5rem;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.price--sale {
+  color: var(--color-primary);
+}
+
+.price--compare {
+  text-decoration: line-through;
+  color: rgba(0,0,0,0.5);
+  margin-left: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.btn {
+  width: 100%;
+  text-align: center;
+}
+
+.btn--disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+</style> 

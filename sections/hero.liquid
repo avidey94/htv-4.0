@@ -1,0 +1,179 @@
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "model_3d",
+      "label": "3D Model URL (.glb)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome to Honey TV"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Streetwear for the digital age"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="hero" style="text-align: {{ section.settings.text_alignment }}">
+  <div class="hero__media">
+    {%- if section.settings.model_3d != blank and settings.enable_3d_models -%}
+      <model-viewer
+        src="{{ section.settings.model_3d }}"
+        alt="{{ section.settings.heading }}"
+        auto-rotate
+        camera-controls
+        disable-zoom
+        interaction-prompt="none"
+        class="hero__model">
+      </model-viewer>
+    {%- elsif section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 2000 }}"
+           alt="{{ section.settings.heading }}"
+           class="hero__image"
+           loading="eager"
+           width="2000"
+           height="1000">
+    {%- endif -%}
+  </div>
+
+  <div class="hero__content">
+    <div class="container">
+      <h1 class="hero__heading">{{ section.settings.heading }}</h1>
+      {%- if section.settings.subheading != blank -%}
+        <p class="hero__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="btn hero__button">
+          {{ section.settings.button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+.hero {
+  position: relative;
+  height: 80vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__model {
+  width: 100%;
+  height: 100%;
+  --poster-color: transparent;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  padding: 2rem;
+}
+
+.hero__heading {
+  font-size: 6rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.hero__subheading {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero__button {
+  font-size: 1.6rem;
+  padding: 1.5rem 3rem;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 60vh;
+  }
+
+  .hero__heading {
+    font-size: 4rem;
+  }
+
+  .hero__subheading {
+    font-size: 1.8rem;
+  }
+}
+</style> 

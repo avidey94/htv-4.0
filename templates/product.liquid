@@ -1,0 +1,236 @@
+{% schema %}
+{
+  "name": "Product",
+  "settings": []
+}
+{% endschema %}
+
+<div class="product">
+  <div class="container">
+    <div class="product__grid">
+      <div class="product__media">
+        {%- if product.metafields.custom.model_3d != blank and settings.enable_3d_models -%}
+          <model-viewer
+            src="{{ product.metafields.custom.model_3d }}"
+            alt="{{ product.title }}"
+            auto-rotate
+            camera-controls
+            disable-zoom
+            interaction-prompt="none"
+            class="product__model">
+          </model-viewer>
+        {%- else -%}
+          <div class="product__gallery">
+            {%- for image in product.images -%}
+              <div class="product__gallery-item">
+                <img src="{{ image | image_url: width: 800 }}"
+                     alt="{{ image.alt | escape }}"
+                     class="product__image"
+                     loading="lazy"
+                     width="800"
+                     height="800">
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="product__info">
+        <h1 class="product__title">{{ product.title }}</h1>
+
+        <div class="product__price">
+          {%- if product.compare_at_price > product.price -%}
+            <span class="price price--sale">
+              {{ product.price | money }}
+            </span>
+            <span class="price price--compare">
+              {{ product.compare_at_price | money }}
+            </span>
+          {%- else -%}
+            <span class="price">
+              {{ product.price | money }}
+            </span>
+          {%- endif -%}
+        </div>
+
+        {%- form 'product', product -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+          {%- for option in product.options_with_values -%}
+            <div class="product__option">
+              <label class="product__option-label" for="Option-{{ option.position }}">
+                {{ option.name }}
+              </label>
+
+              <div class="product__option-values">
+                {%- for value in option.values -%}
+                  <input type="radio"
+                         id="Option-{{ option.position }}-{{ value }}"
+                         name="options[{{ option.name }}]"
+                         value="{{ value }}"
+                         {% if option.selected_value == value %}checked{% endif %}
+                         class="product__option-input">
+                  <label for="Option-{{ option.position }}-{{ value }}" class="product__option-value">
+                    {{ value }}
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+          <div class="product__quantity">
+            <label for="Quantity" class="product__quantity-label">Quantity</label>
+            <input type="number"
+                   id="Quantity"
+                   name="quantity"
+                   value="1"
+                   min="1"
+                   class="product__quantity-input">
+          </div>
+
+          <button type="submit"
+                  name="add"
+                  class="btn product__add-to-cart"
+                  {% unless product.available %}disabled{% endunless %}>
+            {%- if product.available -%}
+              Add to Cart
+            {%- else -%}
+              Sold Out
+            {%- endif -%}
+          </button>
+        {%- endform -%}
+
+        <div class="product__description rte">
+          {{ product.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.product {
+  padding: 6rem 0;
+}
+
+.product__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+.product__gallery {
+  display: grid;
+  gap: 2rem;
+}
+
+.product__gallery-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.product__image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.product__model {
+  width: 100%;
+  height: 600px;
+  --poster-color: transparent;
+}
+
+.product__title {
+  font-size: 3.6rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.product__price {
+  margin-bottom: 3rem;
+}
+
+.product__option {
+  margin-bottom: 2rem;
+}
+
+.product__option-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.product__option-values {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.product__option-input {
+  position: absolute;
+  opacity: 0;
+}
+
+.product__option-value {
+  padding: 0.8rem 1.6rem;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product__option-input:checked + .product__option-value {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.product__quantity {
+  margin-bottom: 2rem;
+}
+
+.product__quantity-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.product__quantity-input {
+  width: 100px;
+  padding: 0.8rem;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.product__add-to-cart {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.product__description {
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: rgba(0,0,0,0.7);
+}
+
+@media (max-width: 768px) {
+  .product {
+    padding: 4rem 0;
+  }
+
+  .product__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .product__title {
+    font-size: 2.8rem;
+  }
+
+  .product__model {
+    height: 400px;
+  }
+}
+</style> 

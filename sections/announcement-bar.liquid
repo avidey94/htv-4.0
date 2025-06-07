@@ -1,0 +1,74 @@
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Free shipping on all orders over $100"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#3c6af3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    }
+  ]
+}
+{% endschema %}
+
+{%- if section.settings.show_announcement -%}
+  <div class="announcement-bar" style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.text_color }};">
+    <div class="container">
+      {%- if section.settings.announcement_link != blank -%}
+        <a href="{{ section.settings.announcement_link }}" class="announcement-link">
+          {{ section.settings.announcement_text }}
+        </a>
+      {%- else -%}
+        <p class="announcement-text">{{ section.settings.announcement_text }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+<style>
+.announcement-bar {
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.announcement-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.announcement-link:hover {
+  opacity: 0.8;
+}
+
+.announcement-text {
+  margin: 0;
+}
+</style> 
